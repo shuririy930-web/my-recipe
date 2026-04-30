@@ -562,40 +562,39 @@ function switchTab(tab) {
 
 function saveRecipe() {
   const btn = document.querySelector(".save-btn");
-  const overlay = document.getElementById("overlay");
 
   btn.classList.add("saving");
 
+  const preview = document.getElementById("preview");
+  const image = preview && preview.src ? preview.src : "";
+
+  const recipe = {
+    title: document.getElementById("title").value,
+    ingredients: document.getElementById("ingredients").value,
+    steps: document.getElementById("steps").value,
+    memo: document.getElementById("memo").value,
+    categories: Array.from(
+      document.querySelectorAll("input[type=checkbox]:checked")
+    ).map(cb => cb.value),
+    image
+  };
+
+  recipes.push(recipe);
+  localStorage.setItem("recipes", JSON.stringify(recipes));
+
+  resetForm(); // ←ここは先でOK
+
+  // 👉 ここでポップアップ出す（重要）
+  const overlay = document.getElementById("overlay");
+  overlay.classList.add("show");
+
   setTimeout(() => {
+    overlay.classList.remove("show");
+  }, 2000);
 
-    const preview = document.getElementById("preview");
-    const image = preview && preview.src ? preview.src : "";
-
-    const recipe = {
-      title: document.getElementById("title").value,
-      ingredients: document.getElementById("ingredients").value,
-      steps: document.getElementById("steps").value,
-      memo: document.getElementById("memo").value,
-      categories: Array.from(
-        document.querySelectorAll("input[type=checkbox]:checked")
-      ).map(cb => cb.value),
-      image
-    };
-
-    recipes.push(recipe);
-    localStorage.setItem("recipes", JSON.stringify(recipes));
-
-    resetForm();
-
+  setTimeout(() => {
     btn.classList.remove("saving");
-
-    if (overlay) overlay.classList.add("show");
-
-    setTimeout(() => {
-      if (overlay) overlay.classList.remove("show");
-    }, 2000);
-
-  }, 150);
+  }, 400);
 }
 
 //フォームリセット用関数
