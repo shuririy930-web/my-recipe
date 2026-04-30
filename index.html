@@ -55,9 +55,10 @@ input, textarea {
   background-size: 100% 28px;
 }
 
-input:focus, textarea:focus {
+input:focus,
+textarea:focus {
   outline: none;
-  border-bottom: 2px solid #a1887f;
+  box-shadow: none;
 }
 
 .recipe {
@@ -162,6 +163,10 @@ input, textarea {
   width: 100%;
   margin-bottom: 10px;
   padding: 8px;
+  -webkit-appearance: none;
+  appearance: none;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
 /* ◾️材料　とかのところのタイトル*/
