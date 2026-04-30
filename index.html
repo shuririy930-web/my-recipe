@@ -1,0 +1,231 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>My Recipe App</title>
+<style>
+body {
+  margin: 0;
+  font-family: sans-serif;
+}
+
+header {
+  padding: 10px;
+  background: #ff8c8c;
+  color: white;
+  text-align: center;
+}
+
+.image-area {
+  width: 100px;
+  height: 100px;
+  border-radius: 15px;
+  background: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.image-area img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+#cameraIcon {
+  font-size: 30px;
+  color: #888;
+}
+
+.container {
+  padding: 10px;
+  padding-bottom: 70px;
+}
+
+.hidden {
+  display: none;
+}
+
+/* 入力フォーム */
+input, textarea {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 8px;
+}
+
+.category {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+/* レシピカード */
+.recipe {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+/* 下部ナビ */
+nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  background: #eee;
+}
+
+nav button {
+  flex: 1;
+  padding: 15px;
+  border: none;
+  background: #ddd;
+}
+
+nav button.active {
+  background: #ff8c8c;
+  color: white;
+}
+</style>
+</head>
+
+<body>
+
+<header>My Recipe</header>
+
+<div class="container">
+
+  <!-- 入力画面 -->
+  <div id="inputPage">
+
+<div class="image-area" onclick="triggerFile()">
+  <img id="preview" class="hidden">
+  <div id="cameraIcon">📷</div>
+</div>
+
+<input type="file" id="image" accept="image/*" class="hidden" onchange="previewImage(event)">
+
+    <h3>レシピ入力</h3>
+
+    <input id="title" placeholder="料理名">
+
+    <textarea id="ingredients" placeholder="材料"></textarea>
+    <textarea id="steps" placeholder="作り方"></textarea>
+
+    <div class="category">
+      <label><input type="checkbox" value="メイン"> メイン</label>
+      <label><input type="checkbox" value="汁物"> 汁物</label>
+      <label><input type="checkbox" value="副菜"> 副菜</label>
+      <label><input type="checkbox" value="おつまみ"> おつまみ</label>
+      <label><input type="checkbox" value="その他"> その他</label>
+    </div>
+
+<button onclick="saveRecipe()">保存</button>
+
+   
+  </div>
+
+  <!-- 一覧画面 -->
+  <div id="listPage" class="hidden">
+    <input id="search" placeholder="検索..." oninput="renderList()">
+
+    <div id="recipeList"></div>
+  </div>
+
+</div>
+
+<!-- 下部ナビ -->
+<nav>
+  <button id="tabInput" class="active" onclick="switchTab('input')">入力</button>
+  <button id="tabList" onclick="switchTab('list')">一覧</button>
+</nav>
+
+<script> 
+function triggerFile() {
+  document.getElementById("image").click();
+}
+
+function previewImage(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+    const img = document.getElementById("preview");
+    img.src = e.target.result;
+    img.classList.remove("hidden");
+
+    document.getElementById("cameraIcon").style.display = "none";
+  };
+
+  reader.readAsDataURL(file);
+}
+let recipes = JSON.parse(localStorage.getItem("recipes") || "[]");
+
+function switchTab(tab) {
+  document.getElementById("inputPage").classList.toggle("hidden", tab !== "input");
+  document.getElementById("listPage").classList.toggle("hidden", tab !== "list");
+
+  document.getElementById("tabInput").classList.toggle("active", tab === "input");
+  document.getElementById("tabList").classList.toggle("active", tab === "list");
+
+  if (tab === "list") renderList();
+}
+
+function saveRecipe() {
+  const title = document.getElementById("title").value;
+  const ingredients = document.getElementById("ingredients").value;
+  const steps = document.getElementById("steps").value;
+
+  const categories = Array.from(
+    document.querySelectorAll("input[type=checkbox]:checked")
+  ).map(cb => cb.value);
+
+  const image = document.getElementById("preview").src || "";
+
+  const recipe = { title, ingredients, steps, categories, image };
+
+  recipes.push(recipe);
+  localStorage.setItem("recipes", JSON.stringify(recipes));
+
+  alert("保存したよ！");
+}
+
+function renderList() {
+  const keyword = document.getElementById("search").value.toLowerCase();
+  const list = document.getElementById("recipeList");
+  list.innerHTML = "";
+
+  let filtered = recipes.filter(r =>
+    r.title.toLowerCase().includes(keyword) ||
+    r.ingredients.toLowerCase().includes(keyword) ||
+    r.steps.toLowerCase().includes(keyword)
+  );
+
+  // あいうえお順
+  filtered.sort((a, b) => a.title.localeCompare(b.title, "ja"));
+
+  filtered.forEach(r => {
+    const div = document.createElement("div");
+    div.className = "recipe";
+
+    div.innerHTML = `
+      ${r.image ? `<img src="${r.image}" style="width:100%;border-radius:10px;">` : ""}
+      <h4>${r.title}</h4>
+      <p>${r.categories.join(", ")}</p>
+    `;
+
+    list.appendChild(div);
+  });
+}
+
+</script>
+
+</body>
+</html>
