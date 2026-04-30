@@ -260,16 +260,20 @@ nav button.active {
     <div class="section-title">■作り方</div>
     <textarea id="steps" ></textarea>
 
- <div class="category">
-  <label class="cat-btn"><input type="checkbox" value="メイン"><span>メイン</span></label>
-  <label class="cat-btn"><input type="checkbox" value="副菜"><span>副菜</span></label>
-  <label class="cat-btn"><input type="checkbox" value="汁物"><span>汁物</span></label>
-  <label class="cat-btn"><input type="checkbox" value="おつまみ"><span>おつまみ</span></label>
-  <label class="cat-btn"><input type="checkbox" value="デザート"><span>デザート</span></label>
-  <label class="cat-btn"><input type="checkbox" value="その他"><span>その他</span></label>
-</div>
-
-
+    <div class="section-title">■カテゴリー</div>
+    <div class="category">
+      <label class="cat-btn"><input type="checkbox" value="メイン"><span>メイン</span></label>
+      <label class="cat-btn"><input type="checkbox" value="副菜"><span>副菜</span></label>
+      <label class="cat-btn"><input type="checkbox" value="汁物"><span>汁物</span></label>
+      <label class="cat-btn"><input type="checkbox" value="おつまみ"><span>おつまみ</span></label>
+      <label class="cat-btn"><input type="checkbox" value="デザート"><span>デザート</span></label>
+      <label class="cat-btn"><input type="checkbox" value="作り置き"><span>作り置き</span></label>
+      <label class="cat-btn"><input type="checkbox" value="その他"><span>その他</span></label>
+    </div>
+    
+    <div class="section-title">■メモ</div>
+    <textarea id="memo" ></textarea>
+    
 <button onclick="saveRecipe()">保存</button>
 
    
@@ -341,14 +345,14 @@ function saveRecipe() {
   const title = document.getElementById("title").value;
   const ingredients = document.getElementById("ingredients").value;
   const steps = document.getElementById("steps").value;
-
+  const memo = document.getElementById("memo").value;
   const categories = Array.from(
     document.querySelectorAll("input[type=checkbox]:checked")
   ).map(cb => cb.value);
 
   const image = document.getElementById("preview").src || "";
 
-  const recipe = { title, ingredients, steps, categories, image };
+  const recipe = { title, ingredients, steps, memo, categories, image };
 
   recipes.push(recipe);
   localStorage.setItem("recipes", JSON.stringify(recipes));
