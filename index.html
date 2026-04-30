@@ -822,6 +822,7 @@ const db = getFirestore(app);
 
 // Auth作る
 const auth = getAuth(app);
+window.auth = auth;
 
 // UID取得
 onAuthStateChanged(auth, (user) => {
@@ -845,7 +846,8 @@ window.deleteDoc = deleteDoc;
 window.doc = doc;
 
 // レシピ格納用（Firestore専用）
-let recipes = [];
+//let recipes = [];
+//window.recipes = recipes;
 
 // 一覧取得（Firestore → recipesへ反映）
 async function loadRecipes() {
@@ -857,7 +859,7 @@ async function loadRecipes() {
 
   const snapshot = await getDocs(q);
 
-  recipes = [];
+  window.recipes = [];
 
   snapshot.forEach((d) => {
     recipes.push({
