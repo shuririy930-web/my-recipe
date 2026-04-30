@@ -512,6 +512,8 @@ body.flash-save {
 </div>
 
 <script> 
+let isResetting = false;
+
 function triggerFile() {
   document.getElementById("image").click();
 }
@@ -597,44 +599,36 @@ function saveRecipe() {
 }
 
 //フォームリセット用関数
-function resetForm() {
-  document.getElementById("title").value = "";
-  document.getElementById("ingredients").value = "";
-  document.getElementById("steps").value = "";
-  document.getElementById("memo").value = "";
-  // チェック解除
-  document.querySelectorAll("input[type=checkbox]").forEach(cb => {
-    cb.checked = false;
-  });
-  // 画像リセット
-  const img = document.getElementById("preview");
-  img.src = "";
-  img.classList.add("hidden");
-
-  document.getElementById("cameraIcon").style.display = "block";
-  document.getElementById("deleteBtn").classList.add("hidden");
-
-  document.getElementById("image").value = "";
-}
-
 function renderList() {
   const keyword = document.getElementById("search").value.toLowerCase();
-  const category = document.getElementById("categoryFilter").value;
-
   const list = document.getElementById("recipeList");
   list.innerHTML = "";
 
   let filtered = recipes.filter(r => {
-    const matchText =
+    return (
       r.title.toLowerCase().includes(keyword) ||
       r.ingredients.toLowerCase().includes(keyword) ||
-      r.steps.toLowerCase().includes(keyword);
-
-    const matchCategory =
-      category === "全て" || (r.categories || []).includes(category);
-
-    return matchText && matchCategory;
+      r.steps.toLowerCase().includes(keyword)
+    );
   });
+
+  filtered.sort((a, b) => a.title.localeCompare(b.title, "ja"));
+
+  filtered.forEach((r, index) => {
+    const div = document.createElement("div");
+    div.className = "recipe-item";
+
+    div.innerHTML = `
+      <div class="recipe-row" onclick="openDetail(${index})">
+        ${r.image ? `${r.image}` : `<div class="thumb"></div>`}
+        <div class="recipe-name">${r.title}</div>
+      </div>
+      <button class="delete-btn" onclick="deleteRecipe(${index}, event)">削除</button>
+    `;
+
+    list.appendChild(div);
+  });
+}
 
   filtered.sort((a, b) => a.title.localeCompare(b.title, "ja"));
 
@@ -667,7 +661,7 @@ const ingredientsEl = document.getElementById("ingredients");
 
 // 初期状態で「・」を入れる
 ingredientsEl.addEventListener("focus", function() {
-  if (this.value === "") {
+  if (this.value === "" && !isResetting) {
     this.value = "・ ";
   }
 });
@@ -707,7 +701,7 @@ document.getElementById("steps").addEventListener("input", function() {
 const stepsEl = document.getElementById("steps");
 // 初期で「1、」入れる
 stepsEl.addEventListener("focus", function() {
-  if (this.value === "") {
+  if (this.value === "" && !isResetting) {
     this.value = "1、";
   }
 });
