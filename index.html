@@ -450,6 +450,8 @@ body.flash-save {
 <input id="password" type="password" placeholder="パスワード">
 <button onclick="login()">ログイン</button>
 
+<div id="uidText"></div>
+
 
 <div class="container">
 
@@ -808,8 +810,10 @@ const auth = getAuth(app);
 onAuthStateChanged(auth, (user) => {
   if (user) {
     console.log("あなたのUID:", user.uid);
+    document.getElementById("uidText").textContent = user.uid;
   } else {
     console.log("未ログイン");
+    document.getElementById("uidText").textContent = "未ログイン";
   }
 });
 
