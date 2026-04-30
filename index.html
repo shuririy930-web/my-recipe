@@ -112,6 +112,25 @@ button:active {
   cursor: pointer;
 }
 
+/* 写真と料理名横並び */
+.top-area {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+/* 料理名の入力エリア */
+.title-input {
+  font-size: 20px;
+  font-family: 'Kiwi Maru', serif;
+  border: none;
+  border-bottom: 2px dashed #c5b7a5;
+  background: transparent;
+}
+
+.title-input:focus {
+  outline: none;
+}
 
 .container {
   padding: 10px;
@@ -175,18 +194,19 @@ nav button.active {
   <!-- 入力画面 -->
   <div id="inputPage">
 
-<div class="image-area" onclick="triggerFile()">
-  <img id="preview" class="hidden">
-  <div id="cameraIcon">📷</div>
-  <button id="deleteBtn" class="hidden" onclick="deleteImage(event)">✖</button>
+<div class="top-area">
+  <div class="image-area" onclick="triggerFile()">
+    <img id="preview" class="hidden">
+    <div id="cameraIcon">📷</div>
+    <button id="deleteBtn" class="hidden" onclick="deleteImage(event)">✖</button>
+  </div>
+  <input id="title" class="title-input" placeholder="料理名">
 </div>
-
+  
 <input type="file" id="image" accept="image/*" class="hidden" onchange="previewImage(event)">
 
     <h3>レシピ入力</h3>
-
-    <input id="title" placeholder="料理名">
-
+    
     <textarea id="ingredients" placeholder="材料"></textarea>
     <textarea id="steps" placeholder="作り方"></textarea>
 
