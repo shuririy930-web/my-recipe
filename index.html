@@ -507,24 +507,27 @@ function saveRecipe() {
 
   btn.classList.add("saving");
 
-  const title = document.getElementById("title").value;
-  const ingredients = document.getElementById("ingredients").value;
-  const steps = document.getElementById("steps").value;
-  const memo = document.getElementById("memo").value;
-
-  const categories = Array.from(
-    document.querySelectorAll("input[type=checkbox]:checked")
-  ).map(cb => cb.value);
-
-  const image = document.getElementById("preview").src || "";
-
-  recipes.push({ title, ingredients, steps, memo, categories, image });
-  localStorage.setItem("recipes", JSON.stringify(recipes));
-
-  // ← ここで先にリセット（安全）
-  resetForm();
-
   setTimeout(() => {
+
+    const preview = document.getElementById("preview");
+    const image = preview && preview.src ? preview.src : "";
+
+    const recipe = {
+      title: document.getElementById("title").value,
+      ingredients: document.getElementById("ingredients").value,
+      steps: document.getElementById("steps").value,
+      memo: document.getElementById("memo").value,
+      categories: Array.from(
+        document.querySelectorAll("input[type=checkbox]:checked")
+      ).map(cb => cb.value),
+      image
+    };
+
+    recipes.push(recipe);
+    localStorage.setItem("recipes", JSON.stringify(recipes));
+
+    resetForm();
+
     btn.classList.remove("saving");
 
     if (overlay) overlay.classList.add("show");
@@ -533,7 +536,7 @@ function saveRecipe() {
       if (overlay) overlay.classList.remove("show");
     }, 2000);
 
-  }, 300);
+  }, 150);
 }
 
 //フォームリセット用関数
