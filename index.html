@@ -426,7 +426,7 @@ body.flash-save {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.6);
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
 }
@@ -756,12 +756,12 @@ function openDetail(index) {
     <p>【メモ】<br>${r.memo}</p>
   `;
 
-  document.getElementById("detailModal").classList.remove("hidden");
+  document.getElementById("detailModal").style.display = "flex";
 }
 
 //一覧の中の削除
 function closeDetail() {
-  document.getElementById("detailModal").classList.add("hidden");
+  document.getElementById("detailModal").style.display = "none";
 }
 
 function deleteRecipe(index, event) {
