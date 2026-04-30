@@ -589,6 +589,27 @@ function renderList() {
   });
 }
 
+function resetForm() {
+  isResetting = true;
+
+  document.getElementById("title").value = "";
+  document.getElementById("ingredients").value = "";
+  document.getElementById("steps").value = "";
+  document.getElementById("memo").value = "";
+
+  document.getElementById("preview").src = "";
+  document.getElementById("preview").classList.add("hidden");
+
+  document.getElementById("cameraIcon").style.display = "block";
+  document.getElementById("deleteBtn").classList.add("hidden");
+
+  document.querySelectorAll("input[type=checkbox]").forEach(cb => {
+    cb.checked = false;
+  });
+
+  isResetting = false;
+}
+
 //保存の処理
 function saveRecipe() {
   const btn = document.querySelector(".save-btn");
@@ -612,7 +633,7 @@ function saveRecipe() {
   recipes.push(recipe);
   localStorage.setItem("recipes", JSON.stringify(recipes));
 
-  resetForm(); // ←ここは先でOK
+  resetForm();
 
   // ここでポップアップ出す
   const overlay = document.getElementById("overlay");
