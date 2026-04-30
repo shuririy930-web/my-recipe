@@ -597,9 +597,18 @@ function resetForm() {
   document.getElementById("steps").value = "";
   document.getElementById("memo").value = "";
 
-  document.getElementById("preview").src = "";
-  document.getElementById("preview").classList.add("hidden");
+  const preview = document.getElementById("preview");
 
+// イベント解除（画像読み込み系の暴走防止）
+preview.onload = null;
+preview.onerror = null;
+
+// 画像リセット（完全初期化）
+preview.removeAttribute("src");
+preview.src = "";
+
+// 非表示
+  preview.classList.add("hidden");
   document.getElementById("cameraIcon").style.display = "block";
   document.getElementById("deleteBtn").classList.add("hidden");
 
@@ -617,8 +626,11 @@ function saveRecipe() {
   btn.classList.add("saving");
 
   const preview = document.getElementById("preview");
-  const image = preview && preview.src ? preview.src : "";
-
+  const image =
+    preview && preview.classList.contains("hidden")
+      ? ""
+      : preview.src;
+      
   const recipe = {
     title: document.getElementById("title").value,
     ingredients: document.getElementById("ingredients").value,
