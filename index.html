@@ -278,6 +278,42 @@ nav button.active {
   animation: shrinkToCenter 0.4s forwards;
 }
 
+/* 背景暗転 */
+#overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+/* 中央ポップ */
+#modal {
+  background: #fffdf8;
+  padding: 20px 30px;
+  border-radius: 16px;
+  font-size: 18px;
+  font-family: 'Kiwi Maru', serif;
+  color: #4a3f35;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+
+  transform: scale(0.8);
+  opacity: 0;
+  transition: 0.25s ease;
+}
+
+/* 表示時 */
+#overlay.show {
+  display: flex;
+}
+
+#overlay.show #modal {
+  transform: scale(1);
+  opacity: 1;
+}
+
 @keyframes shrinkToCenter {
   0% {
     transform: scale(1);
@@ -441,11 +477,10 @@ function switchTab(tab) {
 
 function saveRecipe() {
   const btn = document.querySelector(".save-btn");
-  const toast = document.getElementById("toast");
+  const overlay = document.getElementById("overlay");
 
-  // 吸い込み演出
+  // ボタン吸い込み
   btn.classList.add("saving");
-  document.body.classList.add("flash-save");
 
   setTimeout(() => {
     const title = document.getElementById("title").value;
@@ -459,25 +494,24 @@ function saveRecipe() {
 
     const image = document.getElementById("preview").src || "";
 
-    const recipe = { title, ingredients, steps, memo, categories, image };
-
-    recipes.push(recipe);
+    recipes.push({ title, ingredients, steps, memo, categories, image });
     localStorage.setItem("recipes", JSON.stringify(recipes));
 
     // フォームリセット
     resetForm();
 
-    // ボタン復活
+    // ボタン戻す
     btn.classList.remove("saving");
 
-    // トースト表示
-    toast.classList.add("show");
+    // モーダル表示
+    overlay.classList.add("show");
 
+    // 2秒後に消す
     setTimeout(() => {
-      toast.classList.remove("show");
+      overlay.classList.remove("show");
     }, 2000);
 
-  }, 350); // 吸い込み見せる時間
+  }, 300);
 }
 
 //フォームリセット用関数
@@ -619,7 +653,9 @@ stepsEl.addEventListener("keydown", function(e) {
 
 </script>
 
-<div id="toast">保存完了</div>
+<div id="overlay">
+  <div id="modal">保存完了</div>
+</div>
 
 </body>
 </html>
