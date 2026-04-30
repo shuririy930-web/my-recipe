@@ -491,7 +491,7 @@ body.flash-save {
     <textarea id="memo" ></textarea>
     
 <div class="save-wrap">
-  <button class="save-btn" onclick="saveRecipe()">保存</button>
+  <button class="save-btn" id="saveBtn" onclick="saveRecipe()" disabled>保存</button>
 </div>
 
    
@@ -630,11 +630,18 @@ preview.src = "";
 //保存の処理
 window.saveRecipe = async function () {
   try {
-    if (!window.auth) {
-      alert("初期化中です");
+    if (!isAuthReady) {
+      alert("まだ準備中です（Firebase初期化中）");
       return;
     }
-
+    
+    const user = window.auth.currentUser;
+    
+    if (!user) {
+      alert("ログインしてください");
+      return;
+    }
+    
     const user = window.auth.currentUser;
     if (!user) {
       alert("ログインしてください");
@@ -797,6 +804,8 @@ const firebaseConfig = {
   appId: "1:532360395180:web:c49bf60ad76f1d996ee209"
 };
 
+let isAuthReady = false;
+
 import { query, where } from "firebase/firestore";
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
@@ -825,10 +834,13 @@ window.auth = auth;
 
 // UID取得
 onAuthStateChanged(auth, (user) => {
+  isAuthReady = true;
+  document.getElementById("saveBtn").disabled = false;
+
   if (user) {
     console.log("あなたのUID:", user.uid);
     document.getElementById("uidText").textContent = user.uid;
-  
+
     loadRecipes();
   } else {
     console.log("未ログイン");
