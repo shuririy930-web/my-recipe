@@ -397,6 +397,37 @@ document.getElementById("steps").addEventListener("input", function() {
   autoResize(this);
 });
 
+//作り方の1.2.3.のカウント
+const stepsEl = document.getElementById("steps");
+// 初期で「1、」入れる
+stepsEl.addEventListener("focus", function() {
+  if (this.value === "") {
+    this.value = "1、";
+  }
+});
+
+stepsEl.addEventListener("keydown", function(e) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+
+    const cursorPos = this.selectionStart;
+    const textBefore = this.value.substring(0, cursorPos);
+    const textAfter = this.value.substring(cursorPos);
+
+    // 今の行数をカウント
+    const lines = textBefore.split("\n").length;
+    const nextNumber = lines + "、";
+
+    this.value = textBefore + "\n" + nextNumber + " " + textAfter;
+
+    this.selectionStart = this.selectionEnd =
+      cursorPos + nextNumber.length + 2;
+
+    // 即リサイズ
+    autoResize(this);
+  }
+});
+
 </script>
 
 </body>
