@@ -156,6 +156,13 @@ input, textarea {
   padding: 8px;
 }
 
+/* ◾️材料　とかのところのタイトル*/
+.section-title {
+  font-family: 'Kiwi Maru', serif;
+  font-size: 16px;
+  margin: 15px 0 5px;
+}
+
 .category {
   display: flex;
   flex-wrap: wrap;
@@ -212,9 +219,8 @@ nav button.active {
 </div>
   
 <input type="file" id="image" accept="image/*" class="hidden" onchange="previewImage(event)">
-
-    <h3>レシピ入力</h3>
     
+    <div class="section-title">◾️材料</div>
     <textarea id="ingredients" placeholder="材料"></textarea>
     <textarea id="steps" placeholder="作り方"></textarea>
 
@@ -344,6 +350,30 @@ function renderList() {
 document.getElementById("title").addEventListener("input", function() {
   this.style.height = "auto";
   this.style.height = (this.scrollHeight - 4) + "px"; 
+});
+
+
+ //材料のところ
+const ingredientsEl = document.getElementById("ingredients");
+
+// 初期状態で「・」を入れる
+ingredientsEl.addEventListener("focus", function() {
+  if (this.value === "") {
+    this.value = "・";
+  }
+});
+
+ingredientsEl.addEventListener("keydown", function(e) {
+  if (e.key === "Enter") {
+    e.preventDefault(); // 普通の改行を止める
+
+    const cursorPos = this.selectionStart;
+    const textBefore = this.value.substring(0, cursorPos);
+    const textAfter = this.value.substring(cursorPos);
+
+    this.value = textBefore + "\n・ " + textAfter;
+this.selectionStart = this.selectionEnd = cursorPos + 3;
+ }
 });
 
 </script>
