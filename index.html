@@ -604,7 +604,6 @@ preview.onload = null;
 preview.onerror = null;
 
 // 画像リセット（完全初期化）
-preview.removeAttribute("src");
 preview.src = "";
 
 // 非表示
@@ -617,6 +616,7 @@ preview.src = "";
   });
 
   isResetting = false;
+  document.getElementById("image").value = "";
 }
 
 //保存の処理
@@ -633,11 +633,13 @@ function saveRecipe() {
     return;
   }
 
-  // 画像あり
   const reader = new FileReader();
 
   reader.onload = function(e) {
     saveAfterImageReady(e.target.result);
+
+    // 読み終わった後にリセット
+    fileInput.value = "";
   };
 
   reader.readAsDataURL(file);
