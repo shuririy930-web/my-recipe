@@ -366,6 +366,7 @@ ingredientsEl.addEventListener("focus", function() {
   }
 });
 
+//改行した時のアクション
 ingredientsEl.addEventListener("keydown", function(e) {
   if (e.key === "Enter") {
     e.preventDefault(); // 普通の改行を止める
@@ -376,7 +377,8 @@ ingredientsEl.addEventListener("keydown", function(e) {
 
     this.value = textBefore + "\n・ " + textAfter;
 this.selectionStart = this.selectionEnd = cursorPos + 3;
- }
+ autoResize(this);
+  }
 });
 
 //材料と作り方の入力エリア
