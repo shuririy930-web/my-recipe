@@ -4,18 +4,74 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru&family=Zen+Maru+Gothic&display=swap" rel="stylesheet">
 <title>My Recipe App</title>
 <style>
 body {
   margin: 0;
-  font-family: sans-serif;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  background: #f7f3ea;
+  color: #4a3f35;
 }
 
+/* 紙っぽい質感 */
+.container {
+  padding: 15px;
+  padding-bottom: 80px;
+  background: repeating-linear-gradient(
+    to bottom,
+    #f7f3ea,
+    #f7f3ea 28px,
+    #e3dccf 29px
+  );
+}
+
+/* タイトル */
 header {
-  padding: 10px;
-  background: #ff8c8c;
+  padding: 12px;
+  background: #d8a48f;
   color: white;
   text-align: center;
+  font-family: 'Kiwi Maru', serif;
+  letter-spacing: 2px;
+}
+
+input, textarea {
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 10px;
+  border: none;
+  border-bottom: 2px dashed #c5b7a5;
+  background: transparent;
+  font-size: 16px;
+  font-family: 'Zen Maru Gothic', sans-serif;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  border-bottom: 2px solid #a1887f;
+}
+
+.recipe {
+  background: #fffdf8;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 12px;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+  border-left: 5px solid #d8a48f;
+}
+
+button {
+  background: #d8a48f;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  font-family: 'Kiwi Maru', serif;
+}
+
+button:active {
+  transform: scale(0.97);
 }
 
 .image-area {
