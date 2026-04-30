@@ -512,7 +512,7 @@ const ingredientsEl = document.getElementById("ingredients");
 // 初期状態で「・」を入れる
 ingredientsEl.addEventListener("focus", function() {
   if (this.value === "") {
-    this.value = "・";
+    this.value = "・ ";
   }
 });
 
@@ -576,7 +576,7 @@ stepsEl.addEventListener("keydown", function(e) {
       nextNumber = parseInt(match[1]) + 1;
     }
 
-    const insertText = nextNumber + "、 ";
+    const insertText = nextNumber + "、";
 
     this.value = textBefore + "\n" + insertText + textAfter;
 
