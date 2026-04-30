@@ -263,12 +263,13 @@ nav button.active {
   
 <input type="file" id="image" accept="image/*" class="hidden" onchange="previewImage(event)">
     
-    <div class="section-title">■材料</div>
+    <div class="section-title">🧂材料</div>
     <textarea id="ingredients" ></textarea>
     
-    <div class="section-title">■作り方</div>
+    <div class="section-title">🥣作り方</div>
     <textarea id="steps" ></textarea>
 
+    <div class="section-divider"></div>
     <div class="category">
       <label class="cat-btn"><input type="checkbox" value="メイン"><span>メイン</span></label>
       <label class="cat-btn"><input type="checkbox" value="副菜"><span>副菜</span></label>
@@ -280,6 +281,7 @@ nav button.active {
     </div>
 
     <div class="section-divider"></div>
+    <div class="section-title">📝メモ</div>
     <textarea id="memo" ></textarea>
     
 <button onclick="saveRecipe()">保存</button>
