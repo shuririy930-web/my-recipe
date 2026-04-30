@@ -45,6 +45,9 @@ input, textarea {
   background: transparent;
   font-size: 16px;
   font-family: 'Zen Maru Gothic', sans-serif;
+
+  resize: none;
+  overflow: hidden;
 }
 
 input:focus, textarea:focus {
@@ -220,7 +223,7 @@ nav button.active {
   
 <input type="file" id="image" accept="image/*" class="hidden" onchange="previewImage(event)">
     
-    <div class="section-title">◾️材料</div>
+    <div class="section-title">■材料</div>
     <textarea id="ingredients" placeholder="材料"></textarea>
     <textarea id="steps" placeholder="作り方"></textarea>
 
@@ -374,6 +377,22 @@ ingredientsEl.addEventListener("keydown", function(e) {
     this.value = textBefore + "\n・ " + textAfter;
 this.selectionStart = this.selectionEnd = cursorPos + 3;
  }
+});
+
+//材料と作り方の入力エリア
+function autoResize(el) {
+  el.style.height = "auto";
+  el.style.height = el.scrollHeight + "px";
+}
+
+// 材料
+document.getElementById("ingredients").addEventListener("input", function() {
+  autoResize(this);
+});
+
+// 作り方
+document.getElementById("steps").addEventListener("input", function() {
+  autoResize(this);
 });
 
 </script>
