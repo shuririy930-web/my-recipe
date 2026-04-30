@@ -628,41 +628,54 @@ preview.src = "";
 }
 
 //保存の処理
-async function saveRecipe() {
-  const btn = document.querySelector(".save-btn");
-  btn.classList.add("saving");
+window.saveRecipe = async function () {
+  try {
+    const user = auth.currentUser;
 
-  const fileInput = document.getElementById("image");
-  const file = fileInput.files[0];
+    if (!user) {
+      alert("ログインできてない状態です");
+      return;
+    }
 
-  const reader = new FileReader();
+    const fileInput = document.getElementById("image");
+    const file = fileInput.files[0];
 
-  reader.onload = async function(e) {
-    const recipe = {
-      title: document.getElementById("title").value,
-      ingredients: document.getElementById("ingredients").value,
-      steps: document.getElementById("steps").value,
-      memo: document.getElementById("memo").value,
-      categories: Array.from(
-        document.querySelectorAll("input[type=checkbox]:checked")
-      ).map(cb => cb.value),
-      image: e.target.result,
-      
-      uid: auth.currentUser ? auth.currentUser.uid : null
+    const reader = new FileReader();
+
+    reader.onload = async function(e) {
+
+      const recipe = {
+        title: document.getElementById("title").value,
+        ingredients: document.getElementById("ingredients").value,
+        steps: document.getElementById("steps").value,
+        memo: document.getElementById("memo").value,
+        categories: Array.from(
+          document.querySelectorAll("input[type=checkbox]:checked")
+        ).map(cb => cb.value),
+        image: e.target.result,
+        uid: user.uid
+      };
+
+      try {
+        await addDoc(collection(db, "recipes"), recipe);
+        alert("保存成功！");
+        resetForm();
+      } catch (e) {
+        alert("保存失敗：" + e.message);
+      }
     };
 
-    await addDoc(collection(db, "recipes"), recipe);
+    if (!file) {
+      reader.onload({ target: { result: "" } });
+      return;
+    }
 
-    resetForm();
-  };
+    reader.readAsDataURL(file);
 
-  if (!file) {
-    reader.onload({ target: { result: "" } });
-    return;
+  } catch (e) {
+    alert("致命的エラー：" + e.message);
   }
-
-  reader.readAsDataURL(file);
-}
+};
 
 
 
