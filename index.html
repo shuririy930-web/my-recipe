@@ -304,6 +304,28 @@ body.flash-save {
   100% { background-color: #f7f3ea; }
 }
 
+/* トースト通知 */
+#toast {
+  position: fixed;
+  bottom: 120px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(216,164,143,0.95);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 20px;
+  font-size: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+/* 表示状態 */
+#toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
 </style>
 </head>
 
@@ -417,13 +439,12 @@ function switchTab(tab) {
   if (tab === "list") renderList();
 }
 
-function saveRecipe(e) {
+function saveRecipe() {
   const btn = document.querySelector(".save-btn");
+  const toast = document.getElementById("toast");
 
-  // ① 吸い込みアニメ開始
+  // 吸い込み演出
   btn.classList.add("saving");
-
-  // ② 画面ちょい反応
   document.body.classList.add("flash-save");
 
   setTimeout(() => {
@@ -443,11 +464,20 @@ function saveRecipe(e) {
     recipes.push(recipe);
     localStorage.setItem("recipes", JSON.stringify(recipes));
 
-    // ③ フォーム全部リセット
+    // フォームリセット
     resetForm();
 
-    alert("保存完了");
-  }, 300); // アニメ見せてから保存
+    // ボタン復活
+    btn.classList.remove("saving");
+
+    // トースト表示
+    toast.classList.add("show");
+
+    setTimeout(() => {
+      toast.classList.remove("show");
+    }, 2000);
+
+  }, 350); // 吸い込み見せる時間
 }
 
 //フォームリセット用関数
@@ -588,6 +618,8 @@ stepsEl.addEventListener("keydown", function(e) {
 });
 
 </script>
+
+<div id="toast">保存完了</div>
 
 </body>
 </html>
