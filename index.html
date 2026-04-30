@@ -505,36 +505,32 @@ function saveRecipe() {
   const btn = document.querySelector(".save-btn");
   const overlay = document.getElementById("overlay");
 
-  // ボタン吸い込み
   btn.classList.add("saving");
 
+  const title = document.getElementById("title").value;
+  const ingredients = document.getElementById("ingredients").value;
+  const steps = document.getElementById("steps").value;
+  const memo = document.getElementById("memo").value;
+
+  const categories = Array.from(
+    document.querySelectorAll("input[type=checkbox]:checked")
+  ).map(cb => cb.value);
+
+  const image = document.getElementById("preview").src || "";
+
+  recipes.push({ title, ingredients, steps, memo, categories, image });
+  localStorage.setItem("recipes", JSON.stringify(recipes));
+
+  // ← ここで先にリセット（安全）
+  resetForm();
+
   setTimeout(() => {
-    const title = document.getElementById("title").value;
-    const ingredients = document.getElementById("ingredients").value;
-    const steps = document.getElementById("steps").value;
-    const memo = document.getElementById("memo").value;
-
-    const categories = Array.from(
-      document.querySelectorAll("input[type=checkbox]:checked")
-    ).map(cb => cb.value);
-
-    const image = document.getElementById("preview").src || "";
-
-    recipes.push({ title, ingredients, steps, memo, categories, image });
-    localStorage.setItem("recipes", JSON.stringify(recipes));
-
-    // フォームリセット
-    resetForm();
-
-    // ボタン戻す
     btn.classList.remove("saving");
 
-    // モーダル表示
-    overlay.classList.add("show");
+    if (overlay) overlay.classList.add("show");
 
-    // 2秒後に消す
     setTimeout(() => {
-      overlay.classList.remove("show");
+      if (overlay) overlay.classList.remove("show");
     }, 2000);
 
   }, 300);
