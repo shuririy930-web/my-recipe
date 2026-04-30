@@ -388,6 +388,58 @@ body.flash-save {
   transform: translateX(-50%) translateY(0);
 }
 
+/* 一覧表示 */
+.recipe-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background: #fffdf8;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+.recipe-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+.thumb {
+  width: 45px;
+  height: 45px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: #eee;
+}
+.recipe-name {
+  font-size: 16px;
+}
+.delete-btn {
+  background: #aaa;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+/* 詳細表示 */
+#detailModal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#detailContent {
+  background: #fffdf8;
+  padding: 20px;
+  border-radius: 12px;
+  width: 85%;
+  max-height: 80%;
+  overflow-y: auto;
+}
+
+
 </style>
 </head>
 
@@ -453,6 +505,11 @@ body.flash-save {
   <button id="tabInput" class="active" onclick="switchTab('input')">入力</button>
   <button id="tabList" onclick="switchTab('list')">一覧</button>
 </nav>
+
+<div id="detailModal" class="hidden">
+  <div id="detailContent"></div>
+  <button onclick="closeDetail()">閉じる</button>
+</div>
 
 <script> 
 function triggerFile() {
@@ -562,26 +619,36 @@ function resetForm() {
 
 function renderList() {
   const keyword = document.getElementById("search").value.toLowerCase();
+  const category = document.getElementById("categoryFilter").value;
+
   const list = document.getElementById("recipeList");
   list.innerHTML = "";
 
-  let filtered = recipes.filter(r =>
-    r.title.toLowerCase().includes(keyword) ||
-    r.ingredients.toLowerCase().includes(keyword) ||
-    r.steps.toLowerCase().includes(keyword)
-  );
+  let filtered = recipes.filter(r => {
+    const matchText =
+      r.title.toLowerCase().includes(keyword) ||
+      r.ingredients.toLowerCase().includes(keyword) ||
+      r.steps.toLowerCase().includes(keyword);
 
-  // あいうえお順
+    const matchCategory =
+      category === "全て" || (r.categories || []).includes(category);
+
+    return matchText && matchCategory;
+  });
+
   filtered.sort((a, b) => a.title.localeCompare(b.title, "ja"));
 
-  filtered.forEach(r => {
+  filtered.forEach((r, index) => {
     const div = document.createElement("div");
-    div.className = "recipe";
+    div.className = "recipe-item";
 
     div.innerHTML = `
-      ${r.image ? `<img src="${r.image}" style="width:100%;border-radius:10px;">` : ""}
-      <h4>${r.title}</h4>
-      <p>${r.categories.join(", ")}</p>
+      <div class="recipe-row" onclick="openDetail(${index})">
+        ${r.image ? `<img src="${r.image}" class="thumb">` : `<div class="thumb empty"></div>`}
+        <div class="recipe-name">${r.title}</div>
+      </div>
+
+      <button class="delete-btn" onclick="deleteRecipe(${index}, event)">削除</button>
     `;
 
     list.appendChild(div);
@@ -675,6 +742,37 @@ stepsEl.addEventListener("keydown", function(e) {
     autoResize(this);
   }
 });
+
+
+//詳細表示
+function openDetail(index) {
+  const r = recipes[index];
+
+  document.getElementById("detailContent").innerHTML = `
+    ${r.image ? `<img src="${r.image}" style="width:100%;border-radius:10px;">` : ""}
+    <h3>${r.title}</h3>
+    <p>【材料】<br>${r.ingredients}</p>
+    <p>【作り方】<br>${r.steps}</p>
+    <p>【メモ】<br>${r.memo}</p>
+  `;
+
+  document.getElementById("detailModal").classList.remove("hidden");
+}
+
+//一覧の中の削除
+function closeDetail() {
+  document.getElementById("detailModal").classList.add("hidden");
+}
+
+function deleteRecipe(index, event) {
+  event.stopPropagation(); // 詳細開くの防ぐ
+
+  if (!confirm("削除する？")) return;
+
+  recipes.splice(index, 1);
+  localStorage.setItem("recipes", JSON.stringify(recipes));
+  renderList();
+}
 
 </script>
 
