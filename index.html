@@ -180,6 +180,37 @@ input, textarea {
   margin-bottom: 10px;
 }
 
+/* カテゴリーの選択ボタン */
+.cat-btn {
+  cursor: pointer;
+}
+
+.cat-btn input {
+  display: none;
+}
+
+.cat-btn span {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid #d8a48f;
+  background: #fffdf8;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+/* 選択された時 */
+.cat-btn input:checked + span {
+  background: #d8a48f;
+  color: white;
+  border-color: #d8a48f;
+  transform: scale(0.95);
+}
+/* ホバーでふわっと */
+.cat-btn span:hover {
+  background: #f3e1d8;
+}
+
 /* 下部ナビ */
 nav {
   position: fixed;
@@ -229,13 +260,15 @@ nav button.active {
     <div class="section-title">■作り方</div>
     <textarea id="steps" ></textarea>
 
-    <div class="category">
-      <label><input type="checkbox" value="メイン"> メイン</label>
-      <label><input type="checkbox" value="汁物"> 汁物</label>
-      <label><input type="checkbox" value="副菜"> 副菜</label>
-      <label><input type="checkbox" value="おつまみ"> おつまみ</label>
-      <label><input type="checkbox" value="その他"> その他</label>
-    </div>
+ <div class="category">
+  <label class="cat-btn"><input type="checkbox" value="メイン"><span>メイン</span></label>
+  <label class="cat-btn"><input type="checkbox" value="副菜"><span>副菜</span></label>
+  <label class="cat-btn"><input type="checkbox" value="汁物"><span>汁物</span></label>
+  <label class="cat-btn"><input type="checkbox" value="おつまみ"><span>おつまみ</span></label>
+  <label class="cat-btn"><input type="checkbox" value="デザート"><span>デザート</span></label>
+  <label class="cat-btn"><input type="checkbox" value="その他"><span>その他</span></label>
+</div>
+
 
 <button onclick="saveRecipe()">保存</button>
 
