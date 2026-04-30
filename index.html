@@ -627,13 +627,13 @@ function saveRecipe() {
   const fileInput = document.getElementById("image");
   const file = fileInput.files[0];
 
-  // 画像なしの場合
+  // 画像なし
   if (!file) {
     saveAfterImageReady("");
     return;
   }
 
-  // 画像ありの場合（非同期）
+  // 画像あり
   const reader = new FileReader();
 
   reader.onload = function(e) {
