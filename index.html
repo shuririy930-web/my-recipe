@@ -18,12 +18,7 @@ body {
 .container {
   padding: 15px;
   padding-bottom: 80px;
-  background: repeating-linear-gradient(
-    to bottom,
-    #f7f3ea,
-    #f7f3ea 27px,
-    #e3dccf 28px
-  );
+  background: #f7f3ea;
 }
 
 /* タイトル */
@@ -38,16 +33,26 @@ header {
 
 input, textarea {
   width: 100%;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   padding: 10px;
-  border: none;
-  border-bottom: 2px dashed #c5b7a5;
-  background: transparent;
   font-size: 16px;
   line-height: 28px;
-  
+
+  border: none;
+  outline: none;
   resize: none;
   overflow: hidden;
+
+  background-color: #fffdf8;
+  border-radius: 10px;
+
+  /* ノート罫線 */
+  background-image: linear-gradient(
+    to bottom,
+    transparent 27px,
+    #e6ded3 28px
+  );
+  background-size: 100% 28px;
 }
 
 input:focus, textarea:focus {
@@ -165,6 +170,10 @@ input, textarea {
   font-size: 16px;
   margin: 15px 0 5px;
 }
+.section-divider {
+  border-bottom: 1px dashed #c5b7a5;
+  margin: 12px 0;
+}
 
 .category {
   display: flex;
@@ -236,7 +245,7 @@ nav button.active {
 
 <body>
 
-<header>My Recipe</header>
+<header>Shuri's Recipe</header>
 
 <div class="container">
 
@@ -260,7 +269,6 @@ nav button.active {
     <div class="section-title">■作り方</div>
     <textarea id="steps" ></textarea>
 
-    <div class="section-title">■カテゴリー</div>
     <div class="category">
       <label class="cat-btn"><input type="checkbox" value="メイン"><span>メイン</span></label>
       <label class="cat-btn"><input type="checkbox" value="副菜"><span>副菜</span></label>
@@ -270,8 +278,8 @@ nav button.active {
       <label class="cat-btn"><input type="checkbox" value="作り置き"><span>作り置き</span></label>
       <label class="cat-btn"><input type="checkbox" value="その他"><span>その他</span></label>
     </div>
-    
-    <div class="section-title">■メモ</div>
+
+    <div class="section-divider"></div>
     <textarea id="memo" ></textarea>
     
 <button onclick="saveRecipe()">保存</button>
