@@ -511,6 +511,7 @@ body.flash-save {
 </div>
 
 <script> 
+let recipes = [];
 let isResetting = false;
 
 function triggerFile() {
@@ -547,7 +548,7 @@ function previewImage(event) {
 
   reader.readAsDataURL(file);
 }
-let recipes = JSON.parse(localStorage.getItem("recipes") || "[]");
+
 
 function switchTab(tab) {
   document.getElementById("inputPage").classList.toggle("hidden", tab !== "input");
@@ -620,61 +621,41 @@ preview.src = "";
 }
 
 //保存の処理
-function saveRecipe() {
+async function saveRecipe() {
   const btn = document.querySelector(".save-btn");
   btn.classList.add("saving");
 
   const fileInput = document.getElementById("image");
   const file = fileInput.files[0];
 
-  // 画像なし
-  if (!file) {
-    saveAfterImageReady("");
-    return;
-  }
-
   const reader = new FileReader();
 
-  reader.onload = function(e) {
-    saveAfterImageReady(e.target.result);
+  reader.onload = async function(e) {
+    const recipe = {
+      title: document.getElementById("title").value,
+      ingredients: document.getElementById("ingredients").value,
+      steps: document.getElementById("steps").value,
+      memo: document.getElementById("memo").value,
+      categories: Array.from(
+        document.querySelectorAll("input[type=checkbox]:checked")
+      ).map(cb => cb.value),
+      image: e.target.result
+    };
 
-    // 読み終わった後にリセット
-    fileInput.value = "";
+    await addDoc(collection(db, "recipes"), recipe);
+
+    resetForm();
   };
+
+  if (!file) {
+    reader.onload({ target: { result: "" } });
+    return;
+  }
 
   reader.readAsDataURL(file);
 }
 
-function saveAfterImageReady(image) {
-  const btn = document.querySelector(".save-btn");
 
-  const recipe = {
-    title: document.getElementById("title").value,
-    ingredients: document.getElementById("ingredients").value,
-    steps: document.getElementById("steps").value,
-    memo: document.getElementById("memo").value,
-    categories: Array.from(
-      document.querySelectorAll("input[type=checkbox]:checked")
-    ).map(cb => cb.value),
-    image: image
-  };
-
-  recipes.push(recipe);
-  localStorage.setItem("recipes", JSON.stringify(recipes));
-
-  resetForm();
-
-  const overlay = document.getElementById("overlay");
-  overlay.classList.add("show");
-
-  setTimeout(() => {
-    overlay.classList.remove("show");
-  }, 2000);
-
-  setTimeout(() => {
-    btn.classList.remove("saving");
-  }, 400);
-}
 
   //料理名のところ
 document.getElementById("title").addEventListener("input", function() {
@@ -780,20 +761,81 @@ function openDetail(index) {
   document.getElementById("detailModal").style.display = "flex";
 }
 
-//一覧の中の削除
-function closeDetail() {
-  document.getElementById("detailModal").style.display = "none";
+
+
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+
+// Firebase設定
+const firebaseConfig = {
+  apiKey: "AIzaSyBBV82_Zplvcpv8wkLbZMZPQSHwo37ahMA",
+  authDomain: "my-recipe-shuri.firebaseapp.com",
+  projectId: "my-recipe-shuri",
+  storageBucket: "my-recipe-shuri.firebasestorage.app",
+  messagingSenderId: "532360395180",
+  appId: "1:532360395180:web:c49bf60ad76f1d996ee209"
+};
+
+// 初期化
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// グローバル公開（他のscriptから使うため）
+window.db = db;
+window.addDoc = addDoc;
+window.collection = collection;
+window.getDocs = getDocs;
+window.deleteDoc = deleteDoc;
+window.doc = doc;
+
+// レシピ格納用（Firestore専用）
+let recipes = [];
+
+// 一覧取得（Firestore → recipesへ反映）
+async function loadRecipes() {
+  const snapshot = await getDocs(collection(db, "recipes"));
+
+  recipes = [];
+
+  snapshot.forEach((d) => {
+    recipes.push({
+      id: d.id,
+      ...d.data()
+    });
+  });
+
+  renderList();
 }
 
-function deleteRecipe(index, event) {
-  event.stopPropagation(); // 詳細開くの防ぐ
+// 初回読み込み
+loadRecipes();
+
+// 削除関数（Firestore対応）
+window.deleteRecipe = async function(index, event) {
+  event.stopPropagation();
 
   if (!confirm("削除する？")) return;
 
-  recipes.splice(index, 1);
-  localStorage.setItem("recipes", JSON.stringify(recipes));
-  renderList();
-}
+  const recipe = recipes[index];
+
+  await deleteDoc(doc(db, "recipes", recipe.id));
+
+  await loadRecipes();
+};
+
+// 一覧描画用にグローバル化
+window.recipes = recipes;
+window.loadRecipes = loadRecipes;
 
 </script>
 
