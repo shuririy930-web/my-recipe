@@ -273,6 +273,37 @@ nav button.active {
   box-shadow: 0 2px 0 #b88472;
 }
 
+/* 保存時の吸い込みエフェクト */
+.save-btn.saving {
+  animation: shrinkToCenter 0.4s forwards;
+}
+
+@keyframes shrinkToCenter {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  60% {
+    transform: scale(0.2);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+/* 画面ちょい反応 */
+body.flash-save {
+  animation: flashBg 0.4s ease;
+}
+
+@keyframes flashBg {
+  0% { background-color: #f7f3ea; }
+  30% { background-color: #fff1e6; }
+  100% { background-color: #f7f3ea; }
+}
+
 </style>
 </head>
 
@@ -386,23 +417,58 @@ function switchTab(tab) {
   if (tab === "list") renderList();
 }
 
-function saveRecipe() {
-  const title = document.getElementById("title").value;
-  const ingredients = document.getElementById("ingredients").value;
-  const steps = document.getElementById("steps").value;
-  const memo = document.getElementById("memo").value;
-  const categories = Array.from(
-    document.querySelectorAll("input[type=checkbox]:checked")
-  ).map(cb => cb.value);
+function saveRecipe(e) {
+  const btn = document.querySelector(".save-btn");
 
-  const image = document.getElementById("preview").src || "";
+  // ① 吸い込みアニメ開始
+  btn.classList.add("saving");
 
-  const recipe = { title, ingredients, steps, memo, categories, image };
+  // ② 画面ちょい反応
+  document.body.classList.add("flash-save");
 
-  recipes.push(recipe);
-  localStorage.setItem("recipes", JSON.stringify(recipes));
+  setTimeout(() => {
+    const title = document.getElementById("title").value;
+    const ingredients = document.getElementById("ingredients").value;
+    const steps = document.getElementById("steps").value;
+    const memo = document.getElementById("memo").value;
 
-  alert("保存したよ！");
+    const categories = Array.from(
+      document.querySelectorAll("input[type=checkbox]:checked")
+    ).map(cb => cb.value);
+
+    const image = document.getElementById("preview").src || "";
+
+    const recipe = { title, ingredients, steps, memo, categories, image };
+
+    recipes.push(recipe);
+    localStorage.setItem("recipes", JSON.stringify(recipes));
+
+    // ③ フォーム全部リセット
+    resetForm();
+
+    alert("保存完了");
+  }, 300); // アニメ見せてから保存
+}
+
+//フォームリセット用関数
+function resetForm() {
+  document.getElementById("title").value = "";
+  document.getElementById("ingredients").value = "";
+  document.getElementById("steps").value = "";
+  document.getElementById("memo").value = "";
+  // チェック解除
+  document.querySelectorAll("input[type=checkbox]").forEach(cb => {
+    cb.checked = false;
+  });
+  // 画像リセット
+  const img = document.getElementById("preview");
+  img.src = "";
+  img.classList.add("hidden");
+
+  document.getElementById("cameraIcon").style.display = "block";
+  document.getElementById("deleteBtn").classList.add("hidden");
+
+  document.getElementById("image").value = "";
 }
 
 function renderList() {
