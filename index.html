@@ -57,8 +57,8 @@ input, textarea {
 
 input:focus,
 textarea:focus {
-  outline: none;
-  box-shadow: none;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 .recipe {
@@ -245,6 +245,34 @@ nav button.active {
   background: #ff8c8c;
   color: white;
 }
+
+/* 保存ボタン */
+.save-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+/* 保存ボタン強化 */
+.save-btn {
+  width: 90%;
+  max-width: 320px;
+  padding: 14px;
+  font-size: 18px;
+  border-radius: 12px;
+
+  background: #d8a48f;
+  color: white;
+  border: none;
+
+  box-shadow: 0 6px 0 #b88472; /* ←押した感の影 */
+  transition: all 0.15s ease;
+}
+/* 押したとき */
+.save-btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 #b88472;
+}
+
 </style>
 </head>
 
@@ -268,10 +296,10 @@ nav button.active {
   
 <input type="file" id="image" accept="image/*" class="hidden" onchange="previewImage(event)">
     
-    <div class="section-title">🧂材料</div>
+    <div class="section-title">《🧂材料》</div>
     <textarea id="ingredients" ></textarea>
     
-    <div class="section-title">🥣作り方</div>
+    <div class="section-title">《🥣作り方》</div>
     <textarea id="steps" ></textarea>
 
     <div class="section-divider"></div>
@@ -286,10 +314,12 @@ nav button.active {
     </div>
 
     <div class="section-divider"></div>
-    <div class="section-title">📝メモ</div>
+    <div class="section-title">《📝メモ》</div>
     <textarea id="memo" ></textarea>
     
-<button onclick="saveRecipe()">保存</button>
+<div class="save-wrap">
+  <button class="save-btn" onclick="saveRecipe()">保存</button>
+</div>
 
    
   </div>
