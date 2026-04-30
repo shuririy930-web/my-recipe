@@ -622,15 +622,30 @@ preview.src = "";
 //保存の処理
 function saveRecipe() {
   const btn = document.querySelector(".save-btn");
-
   btn.classList.add("saving");
 
-  const preview = document.getElementById("preview");
-  const image =
-    preview && preview.classList.contains("hidden")
-      ? ""
-      : preview.src;
-      
+  const fileInput = document.getElementById("image");
+  const file = fileInput.files[0];
+
+  // 画像なしの場合
+  if (!file) {
+    saveAfterImageReady("");
+    return;
+  }
+
+  // 画像ありの場合（非同期）
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+    saveAfterImageReady(e.target.result);
+  };
+
+  reader.readAsDataURL(file);
+}
+
+function saveAfterImageReady(image) {
+  const btn = document.querySelector(".save-btn");
+
   const recipe = {
     title: document.getElementById("title").value,
     ingredients: document.getElementById("ingredients").value,
@@ -639,7 +654,7 @@ function saveRecipe() {
     categories: Array.from(
       document.querySelectorAll("input[type=checkbox]:checked")
     ).map(cb => cb.value),
-    image
+    image: image
   };
 
   recipes.push(recipe);
@@ -647,7 +662,6 @@ function saveRecipe() {
 
   resetForm();
 
-  // ここでポップアップ出す
   const overlay = document.getElementById("overlay");
   overlay.classList.add("show");
 
