@@ -630,10 +630,14 @@ preview.src = "";
 //保存の処理
 window.saveRecipe = async function () {
   try {
-    const user = auth.currentUser;
+    if (!window.auth) {
+      alert("初期化中です");
+      return;
+    }
 
+    const user = window.auth.currentUser;
     if (!user) {
-      alert("ログインできてない状態です");
+      alert("ログインしてください");
       return;
     }
 
@@ -643,7 +647,6 @@ window.saveRecipe = async function () {
     const reader = new FileReader();
 
     reader.onload = async function(e) {
-
       const recipe = {
         title: document.getElementById("title").value,
         ingredients: document.getElementById("ingredients").value,
@@ -656,13 +659,9 @@ window.saveRecipe = async function () {
         uid: user.uid
       };
 
-      try {
-        await addDoc(collection(db, "recipes"), recipe);
-        alert("保存成功！");
-        resetForm();
-      } catch (e) {
-        alert("保存失敗：" + e.message);
-      }
+      await addDoc(collection(db, "recipes"), recipe);
+      alert("保存成功！");
+      resetForm();
     };
 
     if (!file) {
