@@ -75,8 +75,8 @@ button:active {
 }
 
 .image-area {
-  width: 100px;
-  height: 100px;
+  width: 150px;
+  height: 150px;
   border-radius: 15px;
   background: #f0f0f0;
   display: flex;
@@ -116,26 +116,28 @@ button:active {
 .top-area {
   display: flex;
   gap: 15px;
-  align-items: center;
+  align-items: flex-start;
 }
 
 /* 料理名の入力エリア */
 .title-input {
-  font-size: 20px;
+  font-size: 22px;
+  font-weight: bold;
   font-family: 'Kiwi Maru', serif;
+  line-height: 1.4;
   border: none;
   border-bottom: 2px dashed #c5b7a5;
   background: transparent;
+  flex: 1;              
+  min-width: 0;         
+  white-space: normal; 
+  word-break: break-word;
 }
 
 .title-input:focus {
   outline: none;
 }
 
-.container {
-  padding: 10px;
-  padding-bottom: 70px;
-}
 
 .hidden {
   display: none;
@@ -197,7 +199,7 @@ nav button.active {
 <div class="top-area">
   <div class="image-area" onclick="triggerFile()">
     <img id="preview" class="hidden">
-    <div id="cameraIcon">📷</div>
+    <div id="cameraIcon">＋</div>
     <button id="deleteBtn" class="hidden" onclick="deleteImage(event)">✖</button>
   </div>
   <input id="title" class="title-input" placeholder="料理名">
