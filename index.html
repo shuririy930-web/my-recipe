@@ -518,7 +518,7 @@ body.flash-save {
 </div>
 
 <script> 
-let recipes = [];
+
 let isResetting = false;
 
 function triggerFile() {
@@ -646,7 +646,9 @@ async function saveRecipe() {
       categories: Array.from(
         document.querySelectorAll("input[type=checkbox]:checked")
       ).map(cb => cb.value),
-      image: e.target.result
+      image: e.target.result,
+      
+      uid: auth.currentUser ? auth.currentUser.uid : null
     };
 
     await addDoc(collection(db, "recipes"), recipe);
@@ -783,6 +785,8 @@ const firebaseConfig = {
   appId: "1:532360395180:web:c49bf60ad76f1d996ee209"
 };
 
+import { query, where } from "firebase/firestore";
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
 import {
   getFirestore,
@@ -811,6 +815,8 @@ onAuthStateChanged(auth, (user) => {
   if (user) {
     console.log("あなたのUID:", user.uid);
     document.getElementById("uidText").textContent = user.uid;
+  
+    loadRecipes();
   } else {
     console.log("未ログイン");
     document.getElementById("uidText").textContent = "未ログイン";
@@ -830,7 +836,13 @@ let recipes = [];
 
 // 一覧取得（Firestore → recipesへ反映）
 async function loadRecipes() {
-  const snapshot = await getDocs(collection(db, "recipes"));
+
+  const q = query(
+    collection(db, "recipes"),
+    where("uid", "==", auth.currentUser.uid)
+  );
+
+  const snapshot = await getDocs(q);
 
   recipes = [];
 
@@ -844,8 +856,6 @@ async function loadRecipes() {
   renderList();
 }
 
-// 初回読み込み
-loadRecipes();
 
 // 削除関数（Firestore対応）
 window.deleteRecipe = async function(index, event) {
