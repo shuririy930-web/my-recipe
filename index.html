@@ -604,13 +604,11 @@ function renderList() {
   const list = document.getElementById("recipeList");
   list.innerHTML = "";
 
-  let filtered = recipes.filter(r => {
-    return (
-      r.title.toLowerCase().includes(keyword) ||
-      r.ingredients.toLowerCase().includes(keyword) ||
-      r.steps.toLowerCase().includes(keyword)
-    );
-  });
+  let filtered = recipes.filter(r =>
+    r.title.toLowerCase().includes(keyword) ||
+    r.ingredients.toLowerCase().includes(keyword) ||
+    r.steps.toLowerCase().includes(keyword)
+  );
 
   filtered.sort((a, b) => a.title.localeCompare(b.title, "ja"));
 
@@ -620,7 +618,7 @@ function renderList() {
 
     div.innerHTML = `
       <div class="recipe-row" onclick="openDetail(${index})">
-        ${r.image ? `${r.image}` : `<div class="thumb"></div>`}
+        ${r.image ? `<img src="${r.image}" class="thumb">` : `<div class="thumb"></div>`}
         <div class="recipe-name">${r.title}</div>
       </div>
       <button class="delete-btn" onclick="deleteRecipe(${index}, event)">削除</button>
@@ -630,24 +628,6 @@ function renderList() {
   });
 }
 
-  filtered.sort((a, b) => a.title.localeCompare(b.title, "ja"));
-
-  filtered.forEach((r, index) => {
-    const div = document.createElement("div");
-    div.className = "recipe-item";
-
-    div.innerHTML = `
-      <div class="recipe-row" onclick="openDetail(${index})">
-        ${r.image ? `<img src="${r.image}" class="thumb">` : `<div class="thumb empty"></div>`}
-        <div class="recipe-name">${r.title}</div>
-      </div>
-
-      <button class="delete-btn" onclick="deleteRecipe(${index}, event)">削除</button>
-    `;
-
-    list.appendChild(div);
-  });
-}
 
   //料理名のところ
 document.getElementById("title").addEventListener("input", function() {
