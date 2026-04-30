@@ -87,14 +87,29 @@ button:active {
   width: 120px;
   height: 120px;
   border-radius: 15px;
-  background: #f0f0f0;
+
+  background: #fffdf8;
+
+  /* ←ここが追加ポイント */
+  border: 2px dashed #c5b7a5;  /* ノート風の優しい線 */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   overflow: hidden;
   margin-bottom: 10px;
   cursor: pointer;
   position: relative;
+
+  transition: 0.2s ease;
+}
+
+/* ホバーでちょい反応 */
+.image-area:hover {
+  background: #fdfaf5;
+  transform: translateY(-1px);
 }
 
 .image-area img {
@@ -112,13 +127,24 @@ button:active {
   position: absolute;
   top: 5px;
   right: 5px;
+
+  width: 25px;
+  height: 25px;
+
   background: rgba(0,0,0,0.6);
   color: white;
   border: none;
   border-radius: 50%;
-  width: 25px;
-  height: 25px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 14px;
+  line-height: 1;
+
   cursor: pointer;
+  padding: 0;
 }
 
 /* 写真と料理名横並び */
