@@ -44,8 +44,7 @@ input, textarea {
   border-bottom: 2px dashed #c5b7a5;
   background: transparent;
   font-size: 16px;
-  font-family: 'Zen Maru Gothic', sans-serif;
-
+  
   resize: none;
   overflow: hidden;
 }
@@ -224,8 +223,10 @@ nav button.active {
 <input type="file" id="image" accept="image/*" class="hidden" onchange="previewImage(event)">
     
     <div class="section-title">■材料</div>
-    <textarea id="ingredients" placeholder="材料"></textarea>
-    <textarea id="steps" placeholder="作り方"></textarea>
+    <textarea id="ingredients" ></textarea>
+    
+    <div class="section-title">■作り方</div>
+    <textarea id="steps" ></textarea>
 
     <div class="category">
       <label><input type="checkbox" value="メイン"> メイン</label>
