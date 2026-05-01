@@ -649,8 +649,18 @@ window.saveRecipe = async function () {
       });
     };
 
-    const imageData = await getImage();
+    const file = document.getElementById("image").files[0];
 
+    let imageUrl = "";
+    
+    if (file) {
+      const storage = getStorage();
+      const storageRef = ref(storage, "recipes/" + Date.now());
+    
+      await uploadBytes(storageRef, file);
+      imageUrl = await getDownloadURL(storageRef);
+    }
+    
     const recipe = {
       title: document.getElementById("title").value,
       ingredients: document.getElementById("ingredients").value,
@@ -659,7 +669,7 @@ window.saveRecipe = async function () {
       categories: Array.from(
         document.querySelectorAll("input[type=checkbox]:checked")
       ).map(cb => cb.value),
-      image: imageData,
+      image: imageUrl,
       uid: user.uid
     };
 
@@ -815,6 +825,13 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
 import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-storage.js";
+
+import {
   getAuth,
   signInWithEmailAndPassword,
   onAuthStateChanged
@@ -861,7 +878,7 @@ window.doc = doc;
 // 一覧取得（Firestore → recipesへ反映）
 async function loadRecipes() {
   if (!auth.currentUser) return;
-  
+
   window.recipes = [];
   recipes = window.recipes;
 
@@ -869,12 +886,11 @@ async function loadRecipes() {
     collection(db, "recipes"),
     where("uid", "==", auth.currentUser.uid)
   );
+
   const snapshot = await getDocs(q);
 
-  window.recipes = [];
-
-snapshot.forEach((d) => {
-  window.recipes.push({
+  snapshot.forEach((d) => {
+    recipes.push({
       id: d.id,
       ...d.data()
     });
