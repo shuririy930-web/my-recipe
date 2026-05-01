@@ -632,50 +632,45 @@ preview.src = "";
 //保存の処理
 window.saveRecipe = async function () {
   try {
-    if (!window.isAuthReady) {
-      alert("まだ準備中です（Firebase初期化中）");
-      return;
-    }
-    
-    
+    if (!window.isAuthReady) return alert("準備中");
+
     const user = window.currentUser;
-    if (!user) {
-      alert("ログインしてください");
-      return;
-    }
+    if (!user) return alert("ログインしてください");
 
-    const fileInput = document.getElementById("image");
-    const file = fileInput.files[0];
+    const file = document.getElementById("image").files[0];
 
-    const reader = new FileReader();
+    const getImage = () => {
+      return new Promise((resolve) => {
+        if (!file) return resolve("");
 
-    reader.onload = async function(e) {
-      const recipe = {
-        title: document.getElementById("title").value,
-        ingredients: document.getElementById("ingredients").value,
-        steps: document.getElementById("steps").value,
-        memo: document.getElementById("memo").value,
-        categories: Array.from(
-          document.querySelectorAll("input[type=checkbox]:checked")
-        ).map(cb => cb.value),
-        image: e.target.result,
-        uid: user.uid
-      };
-
-      await addDoc(collection(db, "recipes"), recipe);
-      alert("保存成功！");
-      resetForm();
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
+        reader.readAsDataURL(file);
+      });
     };
 
-    if (!file) {
-      reader.onload({ target: { result: "" } });
-      return;
-    }
+    const imageData = await getImage();
 
-    reader.readAsDataURL(file);
+    const recipe = {
+      title: document.getElementById("title").value,
+      ingredients: document.getElementById("ingredients").value,
+      steps: document.getElementById("steps").value,
+      memo: document.getElementById("memo").value,
+      categories: Array.from(
+        document.querySelectorAll("input[type=checkbox]:checked")
+      ).map(cb => cb.value),
+      image: imageData,
+      uid: user.uid
+    };
+
+    await addDoc(collection(db, "recipes"), recipe);
+
+    alert("保存完了");
+    resetForm();
+    await loadRecipes();
 
   } catch (e) {
-    alert("致命的エラー：" + e.message);
+    alert("エラー：" + e.message);
   }
 };
 
@@ -866,6 +861,9 @@ window.doc = doc;
 // 一覧取得（Firestore → recipesへ反映）
 async function loadRecipes() {
   if (!auth.currentUser) return;
+  
+  window.recipes = [];
+  recipes = window.recipes;
 
   const q = query(
     collection(db, "recipes"),
@@ -875,8 +873,8 @@ async function loadRecipes() {
 
   window.recipes = [];
 
-  snapshot.forEach((d) => {
-    recipes.push({
+snapshot.forEach((d) => {
+  window.recipes.push({
       id: d.id,
       ...d.data()
     });
