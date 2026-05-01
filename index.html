@@ -30,12 +30,37 @@ header {
   letter-spacing: 2px;
 }
 
+input, textarea {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px;
+  font-size: 16px;
+  line-height: 28px;
+
+  border: none;
+  outline: none;
+  resize: none;
+  overflow: hidden;
+
+  background-color: #fffdf8;
+  border-radius: 10px;
+
+  /* ノート罫線 */
+  background-image: linear-gradient(
+    to bottom,
+    transparent 27px,
+    #e6ded3 28px
+  );
+  background-size: 100% 28px;
+}
+
 
 input:focus,
 textarea:focus {
   outline: none !important;
   box-shadow: none !important;
 }
+
 
 .recipe {
   background: #fffdf8;
@@ -613,7 +638,7 @@ window.saveRecipe = async function () {
     }
     
     
-    const user = currentUser;
+    const user = window.currentUser;
     if (!user) {
       alert("ログインしてください");
       return;
@@ -768,7 +793,7 @@ function openDetail(index) {
 let recipes = [];
 window.recipes = recipes;
 
-let currentUser = null;
+window.currentUser = null;
 
 // Firebase設定
 const firebaseConfig = {
@@ -815,12 +840,12 @@ onAuthStateChanged(auth, (user) => {
   const saveBtn = document.getElementById("saveBtn");
 
   if (user) {
-    currentUser = user;
+    window.currentUser = user;
     saveBtn.disabled = false;
     document.getElementById("uidText").textContent = user.uid;
     loadRecipes();
   } else {
-    currentUser = null;
+    window.currentUser = null;
     saveBtn.disabled = true;
     document.getElementById("uidText").textContent = "未ログイン";
   }
