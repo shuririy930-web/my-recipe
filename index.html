@@ -642,13 +642,12 @@ window.saveRecipe = async function () {
     let imageUrl = "";
 
     if (file) {
-      const storage = getStorage();
+      const storage = getStorage(window.firebaseApp);
       const storageRef = ref(storage, "recipes/" + Date.now());
-
       await uploadBytes(storageRef, file);
-      imageUrl = await getDownloadURL(storageRef);
+      imageUrl = await getDownloadURL(storageRef);   
     }
-
+      
     const recipe = {
       title: document.getElementById("title").value,
       ingredients: document.getElementById("ingredients").value,
@@ -831,6 +830,7 @@ import {
 
 // Firebase設定
 const app = initializeApp(firebaseConfig);
+window.firebaseApp = app;
 const db = getFirestore(app);
 
 // Auth作る
