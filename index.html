@@ -817,6 +817,11 @@ import {
   uploadBytes,
   getDownloadURL
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-storage.js";
+window.getStorage = getStorage;
+window.ref = ref;
+window.uploadBytes = uploadBytes;
+window.getDownloadURL = getDownloadURL;
+
 
 import {
   getAuth,
