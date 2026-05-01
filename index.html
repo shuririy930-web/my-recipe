@@ -839,7 +839,7 @@ window.auth = auth;
 
 // UID取得
 onAuthStateChanged(auth, (user) => {
-  isAuthReady = true;
+  window.isAuthReady = true;
 
   const saveBtn = document.getElementById("saveBtn");
 
