@@ -575,7 +575,7 @@ function renderList() {
   const list = document.getElementById("recipeList");
   list.innerHTML = "";
 
-  let filtered = recipes.filter(r =>
+  let filtered = window.recipes.filter(r =>
     r.title.toLowerCase().includes(keyword) ||
     r.ingredients.toLowerCase().includes(keyword) ||
     r.steps.toLowerCase().includes(keyword)
@@ -639,28 +639,16 @@ window.saveRecipe = async function () {
 
     const file = document.getElementById("image").files[0];
 
-    const getImage = () => {
-      return new Promise((resolve) => {
-        if (!file) return resolve("");
-
-        const reader = new FileReader();
-        reader.onload = (e) => resolve(e.target.result);
-        reader.readAsDataURL(file);
-      });
-    };
-
-    const file = document.getElementById("image").files[0];
-
     let imageUrl = "";
-    
+
     if (file) {
       const storage = getStorage();
       const storageRef = ref(storage, "recipes/" + Date.now());
-    
+
       await uploadBytes(storageRef, file);
       imageUrl = await getDownloadURL(storageRef);
     }
-    
+
     const recipe = {
       title: document.getElementById("title").value,
       ingredients: document.getElementById("ingredients").value,
@@ -777,7 +765,7 @@ stepsEl.addEventListener("keydown", function(e) {
 
 //詳細表示
 function openDetail(index) {
-  const r = recipes[index];
+  const r = window.recipes[index];
 
   document.getElementById("detailContent").innerHTML = `
     ${r.image ? `<img src="${r.image}" style="width:100%;border-radius:10px;">` : ""}
@@ -795,8 +783,7 @@ function openDetail(index) {
 </script>
 
 <script type="module">
-let recipes = [];
-window.recipes = recipes;
+window.recipes = [];
 
 window.currentUser = null;
 
@@ -876,11 +863,12 @@ window.doc = doc;
 //window.recipes = recipes;
 
 // 一覧取得（Firestore → recipesへ反映）
+//window.recipes = [];
+
 async function loadRecipes() {
   if (!auth.currentUser) return;
 
   window.recipes = [];
-  recipes = window.recipes;
 
   const q = query(
     collection(db, "recipes"),
@@ -890,7 +878,7 @@ async function loadRecipes() {
   const snapshot = await getDocs(q);
 
   snapshot.forEach((d) => {
-    recipes.push({
+    window.recipes.push({
       id: d.id,
       ...d.data()
     });
@@ -906,7 +894,7 @@ window.deleteRecipe = async function(index, event) {
 
   if (!confirm("削除する？")) return;
 
-  const recipe = recipes[index];
+  const recipe = window.recipes[index];
 
   await deleteDoc(doc(db, "recipes", recipe.id));
 
@@ -914,7 +902,6 @@ window.deleteRecipe = async function(index, event) {
 };
 
 // 一覧描画用にグローバル化
-window.recipes = recipes;
 window.loadRecipes = loadRecipes;
 
 //ログイン処理
