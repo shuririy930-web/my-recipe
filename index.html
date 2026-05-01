@@ -642,7 +642,7 @@ window.saveRecipe = async function () {
     let imageUrl = "";
 
     if (file) {
-      const storage = getStorage(window.firebaseApp);
+      const storage = getStorage();
       const storageRef = ref(storage, "recipes/" + Date.now());
       await uploadBytes(storageRef, file);
       imageUrl = await getDownloadURL(storageRef);   
